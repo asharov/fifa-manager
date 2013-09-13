@@ -1,5 +1,12 @@
 package com.futurice.hackathon.fifamanager;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 import java.util.Locale;
 
 import android.app.ActionBar;
@@ -36,7 +43,10 @@ public class MainActivity extends FragmentActivity implements
 	 * The {@link ViewPager} that will host the section contents.
 	 */
 	ViewPager mViewPager;
+	
+	ArrayList<Player> players;
 
+	@SuppressWarnings("unchecked")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -75,6 +85,39 @@ public class MainActivity extends FragmentActivity implements
 			actionBar.addTab(actionBar.newTab()
 					.setText(mSectionsPagerAdapter.getPageTitle(i))
 					.setTabListener(this));
+		}
+
+		this.players = this.loadPlayersFromFile("players");
+	}
+	
+	public ArrayList<Player> loadPlayersFromFile(String file) {
+		FileInputStream fileInputStream;
+		ArrayList<Player> players = new ArrayList<Player>();
+		try {
+			fileInputStream = this.openFileInput(file);
+			ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
+			players = (ArrayList<Player>)objectInputStream.readObject();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return players;
+	}
+	
+	public void addPlayer(Player player) {
+		FileOutputStream fileOutputStream;
+		this.players.add(player);
+		try {
+			fileOutputStream = this.openFileOutput("players", 0);
+			ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+			objectOutputStream.writeObject(this.players);
+			objectOutputStream.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 
