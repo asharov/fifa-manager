@@ -13,7 +13,8 @@ public class PlayerFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		GridView rootView = (GridView) inflater.inflate(R.layout.fragment_player, container, false);
-		rootView.setAdapter(new PlayerAdapter(getActivity()));
+		MainActivity activity = (MainActivity)getActivity();
+		rootView.setAdapter(new PlayerAdapter(activity, activity.players));
 		return rootView;
 	}
 }
